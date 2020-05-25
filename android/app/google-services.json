@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "833938616932",
+    "firebase_url": "https://church-songnguyen.firebaseio.com",
+    "project_id": "church-songnguyen",
+    "storage_bucket": "church-songnguyen.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:833938616932:android:669cabd380958bf14da571",
+        "android_client_info": {
+          "package_name": "songnguyenit.com.church"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "833938616932-qd27sl8h1tiuumqpnggfva8t1jfe8the.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDvM4gkp5EBSKmCRFkoIhyy6Sxbtvrhfv4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "833938616932-qd27sl8h1tiuumqpnggfva8t1jfe8the.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
