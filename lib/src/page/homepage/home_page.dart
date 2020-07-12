@@ -19,15 +19,27 @@ class _HomePageState extends State<HomePage> {
   HomePageViewModel viewModel = HomePageViewModel();
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
+  Color colorDirection = Colors.blue;
+  Future onSelectNotification(String payload) async {
+    viewModel.getLocation();
+    viewModel.getMarker();
+    // viewModel.getPolyline();
+    setState(() {
+      colorDirection = Colors.red;
+      Future.delayed(Duration(seconds: 3),(){
+        colorDirection = Colors.blue;
+      });
+    });
+  }
 
   @override
   void initState() {
     Geolocator().getCurrentPosition();
-
     var android = AndroidInitializationSettings('app_icon');
     var ios = IOSInitializationSettings();
     var setting = InitializationSettings(android, ios);
-    flutterLocalNotificationsPlugin.initialize(setting);
+    flutterLocalNotificationsPlugin.initialize(setting,
+        onSelectNotification: onSelectNotification);
     Firestore.instance
         .collection('utils')
         .document('time_minus')
@@ -65,21 +77,24 @@ class _HomePageState extends State<HomePage> {
           minute = minute - 60;
         }
       }
+      print("$hours : $minute");
       showNotificationByTime(
-          747, Time(hours, minute, 00), value['church_nearest']['church_name']);
+          747, Time(hours, minute, 00), value['church_nearest']['church_name'],
+          value['church_nearest']['open_time']
+          );
     });
 
     super.initState();
   }
 
-  void showNotificationByTime(int id, Time time, String nameOfChurch) async {
+  void showNotificationByTime(int id, Time time, String nameOfChurch, String realTime) async {
     var android = AndroidNotificationDetails('id', 'name', 'description');
     var ios = IOSNotificationDetails();
     NotificationDetails platformChannel = new NotificationDetails(android, ios);
     await flutterLocalNotificationsPlugin.showDailyAtTime(
         id,
         'Thông báo ứng dụng Church',
-        '$nameOfChurch mở lúc ${time.hour}:${time.minute}',
+        '$nameOfChurch mở lúc $realTime',
         time,
         platformChannel);
   }
@@ -129,13 +144,13 @@ class _HomePageState extends State<HomePage> {
                                 ),
                                 Divider(),
                                 Text(
-                                  'Thời gian thông báo',
+                                  'Thông báo giờ mở cửa trước:',
                                   style: TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold),
                                 ),
                                 SizedBox(
-                                  height: 10,
+                                  height: 15,
                                 ),
                                 Row(
                                   children: <Widget>[
@@ -144,9 +159,10 @@ class _HomePageState extends State<HomePage> {
                                           MainAxisAlignment.start,
                                       children: <Widget>[
                                         Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
                                           children: <Widget>[
                                             Text(
-                                              ' 5p ',
+                                              ' 5p  ',
                                               style: TextStyle(fontSize: 13),
                                             ),
                                             SizedBox(
@@ -166,7 +182,7 @@ class _HomePageState extends State<HomePage> {
                                             ),
                                             Divider(),
                                             Text(
-                                              ' 10p ',
+                                              ' 10p  ',
                                               style: TextStyle(fontSize: 13),
                                             ),
                                             SizedBox(
@@ -185,7 +201,7 @@ class _HomePageState extends State<HomePage> {
                                               ),
                                             ),
                                             Text(
-                                              ' 15p ',
+                                              ' 15p  ',
                                               style: TextStyle(fontSize: 13),
                                             ),
                                             SizedBox(
@@ -221,7 +237,7 @@ class _HomePageState extends State<HomePage> {
                                         Row(
                                           children: <Widget>[
                                             Text(
-                                              ' 30p ',
+                                              ' 30p  ',
                                               style: TextStyle(fontSize: 13),
                                             ),
                                             SizedBox(
@@ -241,7 +257,7 @@ class _HomePageState extends State<HomePage> {
                                             ),
                                             Divider(),
                                             Text(
-                                              ' 45p ',
+                                              ' 45p  ',
                                               style: TextStyle(fontSize: 13),
                                             ),
                                             SizedBox(
@@ -260,7 +276,7 @@ class _HomePageState extends State<HomePage> {
                                               ),
                                             ),
                                             Text(
-                                              ' 1h ',
+                                              ' 1h  ',
                                               style: TextStyle(fontSize: 13),
                                             ),
                                             SizedBox(
@@ -375,13 +391,20 @@ class _HomePageState extends State<HomePage> {
                   onPressed: () {
                     viewModel.getLocation();
                   },
+                  backgroundColor: Colors.blue,
                   child: Icon(Icons.search),
+                  tooltip: 'Lấy vị trí',
                 ),
-                SizedBox(width: 15,),
-                 FloatingActionButton(
+                SizedBox(
+                  width: 15,
+                ),
+                FloatingActionButton(
                   onPressed: () {
                     viewModel.getPolyline();
                   },
+                  autofocus: true,
+                  tooltip: 'Chỉ đường',
+                  backgroundColor: Colors.blue,
                   child: Icon(Icons.directions),
                 )
               ],

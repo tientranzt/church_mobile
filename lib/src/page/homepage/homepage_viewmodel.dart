@@ -157,7 +157,8 @@ class HomePageViewModel extends BaseModel {
   onRadiusSliderValueChange(double value) {
     radiusSliderValue = value;
     radius = double.parse('${radiusSliderValue.toInt()}000');
-    circles = {};
+    if(userPosition != null){
+          circles = {};
     circles.add(Circle(
         circleId: CircleId('113'),
 //        center: LatLng(10.044665, 105.744695),
@@ -165,9 +166,10 @@ class HomePageViewModel extends BaseModel {
         radius: radius,
         fillColor: Color.fromRGBO(66, 165, 245, 0.5),
         strokeColor: Colors.transparent));
+    }
     markers = {};
     updateMaker();
-    // notifyListeners();
+    notifyListeners();
   }
 
 //  function google map route
@@ -198,11 +200,12 @@ class HomePageViewModel extends BaseModel {
       googleAPiKey,
       PointLatLng(_originLatitude, _originLongitude),
       PointLatLng(_destLatitude, _destLongitude),
-      travelMode: TravelMode.driving,
+      travelMode: TravelMode.bicycling,
       // wayPoints: [PolylineWayPoint(location: "Can Tho, Ninh Kiều, Cần Thơ, Việt Nam")]
     );
 
     if (result.points.isNotEmpty) {
+      polylineCoordinates = [];
       result.points.forEach((PointLatLng point) {
         polylineCoordinates.add(LatLng(point.latitude, point.longitude));
         notifyListeners();
@@ -216,6 +219,7 @@ class HomePageViewModel extends BaseModel {
     GeolocationStatus status =
         await geolocator.checkGeolocationPermissionStatus();
     if (status == GeolocationStatus.granted) {
+      print("grant lcoation");
       userPosition = await geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.high);
       _originLatitude = userPosition.latitude;
